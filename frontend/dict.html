@@ -25,6 +25,7 @@ async function load() {
       <td>${UI.esc(e.value)}</td>
       <td>${UI.esc(e.remark || "")}</td>
       <td>${e.enabled ? '<span class="badge success">启用</span>' : '<span class="badge muted">停用</span>'}</td>
+      <td class="mono">${UI.fmtTime(e.updated_at)}</td>
       <td class="text-right">
         <button class="btn sm" onclick="editEntry('${UI.esc(e.id)}')">编辑</button>
         <button class="btn sm danger" onclick="delEntry('${UI.esc(e.id)}')">删除</button>
@@ -109,7 +110,7 @@ boot("数据字典", () => {
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>分类</th><th>键</th><th>值</th><th>备注</th><th>状态</th><th></th></tr></thead>
+          <thead><tr><th>分类</th><th>键</th><th>值</th><th>备注</th><th>状态</th><th>更新时间</th><th></th></tr></thead>
           <tbody id="dict-list"></tbody>
         </table>
       </div>

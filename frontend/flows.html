@@ -247,9 +247,22 @@ function paletteEvents() {
 
 async function loadFlows() {
   const r = await API.get("/api/flows");
+  window._flows = r.flows;
   const sel = document.getElementById("flow-select");
   sel.innerHTML = '<option value="">— 新建流程 —</option>' +
-    r.flows.map(f => `<option value="${UI.esc(f.id)}">${UI.esc(f.name)}</option>`).join("");
+    r.flows.map(f => `<option value="${UI.esc(f.id)}">${UI.esc(f.name)}【${f.enabled === false ? "停用" : "启用"}】</option>`).join("");
+  if (flow.id) sel.value = flow.id;
+  renderFlowStatus();
+}
+
+function renderFlowStatus() {
+  const el = document.getElementById("flow-status");
+  if (!el) return;
+  if (!flow.id) { el.innerHTML = ""; return; }
+  const meta = (window._flows || []).find(f => f.id === flow.id) || flow;
+  const enabled = meta.enabled !== false;
+  el.innerHTML = `${enabled ? '<span class="badge success">启用</span>' : '<span class="badge danger">停用</span>'}` +
+    (meta.updated_at ? `<span class="muted mono" style="font-size:12px">更新于 ${UI.fmtTime(meta.updated_at)}</span>` : "");
 }
 
 async function openFlow(id) {
@@ -257,7 +270,7 @@ async function openFlow(id) {
   flow = r.flow;
   document.getElementById("flow-name").value = flow.name;
   selectedNode = null;
-  render(); renderProps();
+  render(); renderProps(); renderFlowStatus();
 }
 
 async function saveFlow() {
@@ -309,6 +322,7 @@ boot("决策流设计", () => {
       <div class="flow-toolbar">
         <div class="field" style="margin:0;width:220px"><input id="flow-name" placeholder="流程名称" value="未命名决策流"></div>
         <select id="flow-select" style="width:220px" onchange="this.value && openFlow(this.value)"></select>
+        <span id="flow-status" class="flex" style="gap:8px;align-items:center"></span>
         <button class="btn primary" onclick="saveFlow()">💾 保存流程</button>
         <button class="btn" onclick="testFlow()">🧪 测试</button>
         <button class="btn danger" onclick="delFlow()">删除</button>

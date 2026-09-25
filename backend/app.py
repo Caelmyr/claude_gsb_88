@@ -52,9 +52,7 @@ def create_app():
             return jsonify({"ok": False, "error": "账号已被禁用"}), 403
         session["username"] = username
         auth.record_login(username)
-        pub = auth.public_user_dict(user)
-        pub["role"] = "viewer"
-        return jsonify({"ok": True, "user": pub})
+        return jsonify({"ok": True, "user": auth.public_user_dict(user)})
 
     @app.route("/api/logout", methods=["POST"])
     def logout():

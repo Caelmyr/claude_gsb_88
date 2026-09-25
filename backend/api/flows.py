@@ -12,9 +12,6 @@ bp = Blueprint("flows", __name__, url_prefix="/api/flows")
 @login_required
 def list_flows():
     flows = [dict(f) for f in runtime.flow_store.list_flows()]
-    for f in flows:
-        for key in ("enabled", "version", "updated_at"):
-            f.pop(key, None)
     return jsonify({"ok": True, "flows": flows})
 
 

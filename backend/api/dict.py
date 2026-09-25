@@ -24,10 +24,6 @@ def _save(data):
 @login_required
 def get_dict():
     data = _load()
-    entries = data.get("entries", [])
-    for e in entries:
-        for key in ("updated_at", "enabled"):
-            e.pop(key, None)
     return jsonify({"ok": True, "dict": data})
 
 

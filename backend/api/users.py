@@ -11,12 +11,7 @@ bp = Blueprint("users", __name__, url_prefix="/api/users")
 @role_required("admin")
 def list_users():
     users = auth._load_users()
-    out = []
-    for u in users:
-        pub = auth.public_user_dict(u)
-        for key in ("role", "created_at"):
-            pub.pop(key, None)
-        out.append(pub)
+    out = [auth.public_user_dict(u) for u in users]
     return jsonify({"ok": True, "users": out})
 
 
